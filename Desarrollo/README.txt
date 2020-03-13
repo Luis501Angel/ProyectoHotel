@@ -1,0 +1,1 @@
+En esta carpeta se implementera el desarrollo del servidor, cliente y emulador

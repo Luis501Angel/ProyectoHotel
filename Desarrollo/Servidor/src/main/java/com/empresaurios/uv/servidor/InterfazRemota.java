@@ -7,7 +7,7 @@ public interface InterfazRemota extends Remote {
 
     /**
      * Envia un saludo.
-     * @return Retorna el saludo
+     * @param saludo es el mensaje que envia el usuario 
      * @throws RemoteException
      */
     public void Saludo(String saludo) throws RemoteException;

@@ -21,4 +21,30 @@ public class ObjetoRemoto extends UnicastRemoteObject implements InterfazRemota 
   public void Saludo(String saludo) {
     System.out.println(saludo);
   }
+
+  @Override
+  public void interactuar_cuarto1() throws RemoteException {
+    
+
+  }
+
+  @Override
+  public void interactuar_cuarto2() throws RemoteException {
+    
+
+  }
+
+  @Override
+  public void interactuar_cuarto3() throws RemoteException {
+    
+
+  }
+
+  @Override
+  public Boolean[] monitorear_luces() throws RemoteException {
+    
+    return null;
+  }
+
+  
 }

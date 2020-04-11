@@ -1,5 +1,4 @@
 package com.empresaurios.uv.servidor;
-
 import java.rmi.Naming;
 
 /**
@@ -17,7 +16,7 @@ public class Servidor {
             // projects/Remote_Object/src/E1/Servidor"); // Cambie la ruta
             System.setProperty("java.rmi.server.hostname", "192.168.43.198");
 
-            InterfazRemota ir = new ObjetoRemoto("iiii");
+            InterfazRemota ir = new ObjetoRemoto("ObjetoRemoto");
 
             Naming.rebind("//192.168.43.198/ObjetoRemoto", ir);
             System.out.println("Servidor iniciado...");

@@ -45,7 +45,7 @@ public class Servidor {
         try{
             do{
                 st = (String) bufferDeEntrada.readUTF();
-                mostrarTexto("\n[Cliente] -> " + st);
+                mostrarTexto("\n[" + socket.getInetAddress().getHostName() + "] -> " + st);
                 System.out.println("\n[Usted] -> ");
             } while(!st.equals(COMANDO_TERMINACION));
         } catch (IOException e){

@@ -1,0 +1,9 @@
+En esta carpeta se implementara la documentacion de proyecto de Hotel
+
+Hipervinculos:
+
+Trello:
+https://trello.com/b/BGFNSQIU/proyecto-hotel
+
+Repositorio Git:
+https://github.com/Luis501Angel/ProyectoHotel

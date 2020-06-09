@@ -5,6 +5,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 /**
@@ -23,7 +26,7 @@ public class Servidor {
     public void levantarConexion(){
         try{
             serverSocket = new ServerSocket(1445);
-            mostrarTexto("Esperando conexion en el puerto 1444...");
+            mostrarTexto("Esperando conexion en el puerto 1445...");
             socket = serverSocket.accept();
             mostrarTexto("Conexion establecida con: " + socket.getInetAddress().getHostName());
         } catch(Exception e){
@@ -35,7 +38,7 @@ public class Servidor {
     public void levantarConexionEmulador(String ip){
         try{
             socket = new Socket(ip, 1444);
-            mostrarTexto("Conectado al emulador: " + socket.getInetAddress().getHostName());
+            mostrarTexto("Conectado al emulador: " + socket.getInetAddress().getHostName() + " por el puerto 1444");
         } catch (Exception e){
             mostrarTexto("Excepcion al levantar conexion: " + e.getMessage());
             System.exit(0);
@@ -57,7 +60,12 @@ public class Servidor {
         try{
             do{
                 aparato = (String)bufferDeEntrada.readUTF();
-                mostrarTexto("Componente: " + aparato);
+                System.out.println(aparato);
+                //Demo 
+                if(aparato.equals("Fecha")){
+                    mostrarFecha();
+                }
+                //Demo
             } while(!aparato.equals(COMANDO_TERMINACION));
         } catch(IOException e){
             cerrarConexion();
@@ -126,7 +134,6 @@ public class Servidor {
                     try{
                         levantarConexionEmulador("192.168.1.76");
                         flujos();
-                        escribirDatos();
                     } finally{
                         cerrarConexion();
                     }
@@ -135,11 +142,26 @@ public class Servidor {
         });
         hilo.start();
     }
-    
-    public static void main(String[] args) {
+     
+    //Demo
+    public void mostrarFecha() throws IOException {
+        Date fecha = new Date();        
+        while (true) {
+            try {
+                DateFormat fechaHora = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String stFecha = fechaHora.format(fecha);
+                enviar(stFecha);
+                break;
+            } catch (Exception e){
+                 e.printStackTrace();
+            } 
+        }
+    }
+     
+    public static void main(String[] args) throws IOException {
         Servidor servidor = new Servidor();
         
         servidor.ejecutarConexion();
-        servidor.ejecutarConexionEmulador();
+        //servidor.ejecutarConexionEmulador();
     }
 }

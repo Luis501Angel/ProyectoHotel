@@ -26,13 +26,14 @@ public class Emulador {
 
     public void iniciar() {
         try {
-            ServerSocket serverSocket = new ServerSocket(1444);
+            ServerSocket serverSocket = new ServerSocket(1440);
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Emulador iniciado...");
             while (true) {
                 Socket socket = null;
                 try {
                     socket = serverSocket.accept();
-                    Logger.getLogger("Un nuevo cliente esta conectado: " + socket);
-
+                    Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Un nuevo cliente esta conectado: " + socket);
+                    
                     //Obtencion de las cadenas de entrada y salida
                     DataInputStream autinputServer = new DataInputStream((socket.getInputStream()));
                     DataOutputStream autoutputServer = new DataOutputStream(socket.getOutputStream());
@@ -57,14 +58,19 @@ public class Emulador {
                         DataOutputStream ordoutputServer = new DataOutputStream(socket.getOutputStream());
                         boolean orden = ordinputServer.readBoolean();
                         switch (objetivo) {
-                            case "Luces":
+                            case "LUCES":
                                 luces = orden;
+                                System.out.println("Las foquitos se han modificado");
                                 ordoutputServer.writeBoolean(luces);
                                 break;
-                            case "Aire":
+                            case "AIRE":
+                                aire = orden;
+                                System.out.println("Las chiflones se han modificado");
                                 ordoutputServer.writeBoolean(aire);
                                 break;
-                            case "Cerraduras":
+                            case "CERRADURAS":
+                                cerraduras = orden;
+                                System.out.println("Las chapas se han modificado");
                                 ordoutputServer.writeBoolean(cerraduras);
                                 break;
                             default:

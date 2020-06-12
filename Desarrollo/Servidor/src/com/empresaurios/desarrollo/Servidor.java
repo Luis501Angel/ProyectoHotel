@@ -1,4 +1,4 @@
-package com.empresaurios.desarrollo;
+  package com.empresaurios.desarrollo;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -44,7 +44,6 @@ public class Servidor {
         try {
             Socket socketEmulador = new Socket(ip, 1440);
 
-            DataInputStream entradaEmulador = new DataInputStream(socketEmulador.getInputStream());
             DataOutputStream salidaEmulador = new DataOutputStream(socketEmulador.getOutputStream());
             
             mostrarTexto("Conectado al emulador: " + socketEmulador.getInetAddress().getHostName() + " por el puerto 1440");
@@ -55,16 +54,7 @@ public class Servidor {
             System.exit(0);
         }
     }
-
-    /*public void flujos(){
-        try{
-            bufferDeEntrada = new DataInputStream(socket.getInputStream());
-            bufferDeSalida = new DataOutputStream(socket.getOutputStream());
-            bufferDeSalida.flush();
-        } catch(Exception e){
-            mostrarTexto("Error en la apertura de flujos");
-        }
-    }*/
+    
     public void recibirDatos(DataInputStream entradaCliente, DataOutputStream salidaCliente) throws IOException {
 
         try {
@@ -127,27 +117,11 @@ public class Servidor {
         });
         hilo.start();
     }
-//
-//    public void ejecutarConexionEmulador() {
-//        Thread hilo = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while (true) {
-//                    try {
-//                        levantarConexionEmulador("192.168.1.76");
-//                        break;
-//                    } catch (Exception e) {
-//                        System.out.println("Conexion terminada");
-//                    }
-//                }
-//            }
-//        });
-//        hilo.start();
-//    }
+
 
     public static void main(String[] args) throws IOException {
         Servidor servidor = new Servidor();
-//        servidor.ejecutarConexionEmulador();
+        
         servidor.levantarConexion();
     }
 }

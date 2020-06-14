@@ -27,13 +27,12 @@ public class Servidor {
     public void levantarConexion() {
         try {
             serverSocket = new ServerSocket(1444);
-            mostrarTexto("Esperando conexion en el puerto 1445...");
 
             Socket socketCliente = serverSocket.accept();
             
             ejecutarConexion(socketCliente);
 
-            mostrarTexto("Conexion establecida con: " + socketCliente.getInetAddress().getHostName());
+            mostrarTexto("Conexion establecida con el cliente: " + socketCliente.getInetAddress().getHostName() + " en el puerto 1444");
         } catch (Exception e) {
             mostrarTexto("Error al levantar la conexion: " + e.getMessage());
             System.exit(0);
@@ -71,7 +70,7 @@ public class Servidor {
                 if (auto) {
                     orden = entradaCliente.readBoolean();
                 }
-                levantarConexionEmulador("192.168.1.76");  //IP
+                levantarConexionEmulador("26.163.43.171");  //IP
                 System.out.println(objetivo);
             } while (!objetivo.equals(COMANDO_TERMINACION));
         } catch (IOException e) {

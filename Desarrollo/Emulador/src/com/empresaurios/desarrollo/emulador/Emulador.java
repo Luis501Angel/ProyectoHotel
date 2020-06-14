@@ -60,17 +60,17 @@ public class Emulador {
                         switch (objetivo) {
                             case "LUCES":
                                 luces = orden;
-                                System.out.println("Las foquitos se han modificado");
+                                ObtenerEstadoLuces(luces);
                                 ordoutputServer.writeBoolean(luces);
                                 break;
                             case "AIRE":
                                 aire = orden;
-                                System.out.println("Las chiflones se han modificado");
+                                ObtenerEstadoAire(orden);
                                 ordoutputServer.writeBoolean(aire);
                                 break;
                             case "CERRADURAS":
                                 cerraduras = orden;
-                                System.out.println("Las chapas se han modificado");
+                                ObtenerEstadoCerraduras(orden);
                                 ordoutputServer.writeBoolean(cerraduras);
                                 break;
                             default:
@@ -87,9 +87,37 @@ public class Emulador {
             Logger.getLogger(Emulador.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public void ObtenerEstadoLuces(boolean orden){
+        if(orden){
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "LAS VELAS MODERNAS SE HAN DESFUNDIDO");
+        }
+        else{
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "LAS VELAS MODERNAS SE HAN FUNDIDO");
+        }
+    }
+    
+    public void ObtenerEstadoAire(boolean orden){
+        if(orden){
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "EL ABANICO MODERNO SE HA DESROMPIDO");
+        }
+        else{
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "EL ABANICO MODERNO SE HA ROMPIDO");
+        }
+    }
+    
+    public void ObtenerEstadoCerraduras(boolean orden){
+        if(orden){
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "LAS CHAPAS MODERNAS SE HAN DESATRANCADO");
+        }
+        else{
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "LAS CHAPAS MODERNAS SE HAN ATRANCADO");
+        }
+    }
 
     public static void main(String[] args) {
         Emulador emulador = new Emulador();
         emulador.iniciar();
     }
+    
+    
 }

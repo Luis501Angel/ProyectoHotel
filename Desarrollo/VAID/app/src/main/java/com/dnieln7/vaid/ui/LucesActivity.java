@@ -40,7 +40,9 @@ public class LucesActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.luces_appbar).findViewById(R.id.toolbar);
         toolbar.setTitle("Luces");
+        toolbar.setNavigationIcon(R.drawable.ic_less_arrow_left);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     private static void cambiarEstado(CardView habitacion, boolean orden) {

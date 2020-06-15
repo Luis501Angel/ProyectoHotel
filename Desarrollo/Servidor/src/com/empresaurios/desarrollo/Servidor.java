@@ -19,6 +19,7 @@ public class Servidor {
     Scanner teclado = new Scanner(System.in);
     final String COMANDO_TERMINACION = "salir()";
     boolean auto;
+    boolean estado;
     boolean orden;
     String objetivo = "";
     String habitacion = "";
@@ -51,6 +52,7 @@ public class Servidor {
             
             mostrarTexto("Conectado al emulador: " + socketEmulador.getInetAddress().getHostName() + " por el puerto 1440");
             enviar(salidaEmulador);
+            levantarConexionCliente(""); //IP del cliente
             salidaEmulador.flush();
         } catch (Exception e) {
             mostrarTexto("Excepcion al levantar conexion: " + e.getMessage());
@@ -103,18 +105,7 @@ public class Servidor {
 
         try {
             do {
-                auto = entradaEmulador.readBoolean();
-                habitacion = (String) entradaEmulador.readUTF();
-                
-                switch(habitacion) {
-                    case "HB1":
-                        
-                }
-                
-                objetivo = (String) entradaEmulador.readUTF();
-                if (auto) {
-                    orden = entradaEmulador.readBoolean();
-                }
+                estado = entradaEmulador.readBoolean();
                 levantarConexionEmulador("26.163.43.171");  //IP del cliente
                 System.out.println(objetivo);
             } while (!objetivo.equals(COMANDO_TERMINACION));

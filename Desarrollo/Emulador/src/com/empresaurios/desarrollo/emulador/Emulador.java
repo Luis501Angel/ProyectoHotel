@@ -26,7 +26,7 @@ public class Emulador {
 
     public void iniciar() {
         try {
-            ServerSocket serverSocket = new ServerSocket(1440);
+            ServerSocket serverSocket = new ServerSocket(1441);
             Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Emulador iniciado...");
             while (true) {
                 Socket socket = null;

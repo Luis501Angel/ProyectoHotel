@@ -15,7 +15,6 @@ public class Servidor {
 
     private Socket socket;
     private ServerSocket serverSocket;
-    private ServerSocket serverSocketEmulador;
     Scanner teclado = new Scanner(System.in);
     final String COMANDO_TERMINACION = "salir()";
     boolean auto;
@@ -29,15 +28,12 @@ public class Servidor {
     public void levantarConexion() {
         try {
             serverSocket = new ServerSocket(1444);
-            serverSocketEmulador = new ServerSocket(1440);
 
             Socket socketCliente = serverSocket.accept();
-            Socket socketEmulador = serverSocketEmulador.accept();
+            Socket socketEmulador = serverSocket.accept();
             
             ejecutarConexion(socketCliente);
             ejecutarConexionEmulador(socketEmulador);
-            mostrarTexto("Conexion establecida con el cliente: " + socketCliente.getInetAddress().getHostName() + " en el puerto 1444");
-            mostrarTexto("Conexion establecida con el emulador: " + socketEmulador.getInetAddress().getHostName() + " en el puerto 1440");
         } catch (Exception e) {
             mostrarTexto("Error al levantar la conexion: " + e.getMessage());
             System.exit(0);
@@ -46,13 +42,13 @@ public class Servidor {
 
     public void levantarConexionEmulador(String ip) {
         try {
-            Socket socketEmulador = new Socket(ip, 1440);
+            Socket socketEmulador = new Socket(ip, 1441);
 
             DataOutputStream salidaEmulador = new DataOutputStream(socketEmulador.getOutputStream());
+            DataInputStream entradaEmulador = new DataInputStream(socketEmulador.getInputStream());
             
-            mostrarTexto("Conectado al emulador: " + socketEmulador.getInetAddress().getHostName() + " por el puerto 1440");
-            enviar(salidaEmulador);
-            levantarConexionCliente(""); //IP del cliente
+            boolean estado = entradaEmulador.readBoolean();
+            enviarEstado(estado);
             salidaEmulador.flush();
         } catch (Exception e) {
             mostrarTexto("Excepcion al levantar conexion: " + e.getMessage());
@@ -92,7 +88,7 @@ public class Servidor {
                 if (auto) {
                     orden = entradaCliente.readBoolean();
                 }
-                levantarConexionEmulador("26.163.43.171");  //IP del emulador
+                levantarConexionEmulador("localhost");  //IP del emulador
                 System.out.println(objetivo);
             } while (!objetivo.equals(COMANDO_TERMINACION));
         } catch (IOException e) {
@@ -102,11 +98,10 @@ public class Servidor {
     }
     
      public void recibirDatosEmulador(DataInputStream entradaEmulador, DataOutputStream salidaEmulador) throws IOException {
-
         try {
             do {
                 estado = entradaEmulador.readBoolean();
-                levantarConexionEmulador("26.163.43.171");  //IP del cliente
+                levantarConexionEmulador("localhost");  //IP del cliente
                 System.out.println(objetivo);
             } while (!objetivo.equals(COMANDO_TERMINACION));
         } catch (IOException e) {
@@ -122,6 +117,15 @@ public class Servidor {
             bufferDeSalida.writeBoolean(auto);
             bufferDeSalida.writeUTF(objetivo);
             bufferDeSalida.writeBoolean(orden);
+            bufferDeSalida.flush();
+        } catch (IOException e) {
+            mostrarTexto("Error al enviar: " + e.getMessage());
+        }
+    }
+    
+    public void enviarEstado(boolean estado) {
+        try {
+            bufferDeSalida.writeBoolean(estado);
             bufferDeSalida.flush();
         } catch (IOException e) {
             mostrarTexto("Error al enviar: " + e.getMessage());

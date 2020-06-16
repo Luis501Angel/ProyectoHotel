@@ -40,7 +40,7 @@ public class LucesActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.luces_appbar).findViewById(R.id.toolbar);
         toolbar.setTitle("Luces");
-        toolbar.setNavigationIcon(R.drawable.ic_less_arrow_right);
+        toolbar.setNavigationIcon(R.drawable.ic_less_arrow_left);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
@@ -125,7 +125,7 @@ public class LucesActivity extends AppCompatActivity {
             boolean estado = false;
 
             try (Socket cliente = new Socket()) {
-                cliente.connect(new InetSocketAddress(ip, puerto), 5000);
+                cliente.connect(new InetSocketAddress(ip, puerto), 50);
 
                 if(cliente.isConnected()) {
                     DataInputStream entrada = new DataInputStream(cliente.getInputStream());
@@ -136,6 +136,7 @@ public class LucesActivity extends AppCompatActivity {
                     salida.writeUTF(objetivo);
                     salida.writeBoolean(orden);
                     estado = entrada.readBoolean();
+                    System.out.println("El estado es: " + estado);
                 }
                 else {
                     throw new SocketTimeoutException();

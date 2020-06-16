@@ -33,7 +33,7 @@ public class Emulador {
                 try {
                     socket = serverSocket.accept();
                     Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Un nuevo cliente esta conectado: " + socket);
-                    
+
                     //Obtencion de las cadenas de entrada y salida
                     DataInputStream autinputServer = new DataInputStream((socket.getInputStream()));
                     DataOutputStream autoutputServer = new DataOutputStream(socket.getOutputStream());
@@ -87,29 +87,27 @@ public class Emulador {
             Logger.getLogger(Emulador.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void ObtenerEstadoLuces(boolean orden){
-        if(orden){
+
+    public void ObtenerEstadoLuces(boolean orden) {
+        if (orden) {
             Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "LAS VELAS MODERNAS SE HAN DESFUNDIDO");
-        }
-        else{
+        } else {
             Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "LAS VELAS MODERNAS SE HAN FUNDIDO");
         }
     }
-    
-    public void ObtenerEstadoAire(boolean orden){
-        if(orden){
+
+    public void ObtenerEstadoAire(boolean orden) {
+        if (orden) {
             Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "EL ABANICO MODERNO SE HA DESROMPIDO");
-        }
-        else{
+        } else {
             Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "EL ABANICO MODERNO SE HA ROMPIDO");
         }
     }
-    
-    public void ObtenerEstadoCerraduras(boolean orden){
-        if(orden){
+
+    public void ObtenerEstadoCerraduras(boolean orden) {
+        if (orden) {
             Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "LAS CHAPAS MODERNAS SE HAN DESATRANCADO");
-        }
-        else{
+        } else {
             Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "LAS CHAPAS MODERNAS SE HAN ATRANCADO");
         }
     }
@@ -118,6 +116,5 @@ public class Emulador {
         Emulador emulador = new Emulador();
         emulador.iniciar();
     }
-    
-    
+
 }

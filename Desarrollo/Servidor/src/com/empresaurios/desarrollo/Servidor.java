@@ -30,9 +30,11 @@ public class Servidor {
     public void levantarConexion() {
         try {
             serverSocket = new ServerSocket(1444);
+            System.out.println("El server se ha iniciado");
             while (true) {
                 Socket socketCliente = serverSocket.accept();
                 System.out.println("Conexion establecida con el cliente: " + socketCliente.getInetAddress().getHostName());
+               
                 ejecutarConexion(socketCliente);
             }
         } catch (IOException e) {
@@ -81,7 +83,7 @@ public class Servidor {
                 orden = entradaCliente.readBoolean();
             }
 
-            levantarConexionEmulador("192.168.1.76");  //IP del emulador
+            levantarConexionEmulador("192.168.1.68");  //IP del emulador
         } catch (IOException e) {
             serverSocket.close();
         }
@@ -95,22 +97,22 @@ public class Servidor {
         Thread hilo = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
                     try {
                         DataInputStream entradaCliente = new DataInputStream(socketCliente.getInputStream());
                         DataOutputStream salidaCliente = new DataOutputStream(socketCliente.getOutputStream());
 
                         recibirDatosCliente(entradaCliente, salidaCliente);
                         salidaCliente.writeBoolean(estado);
+                        
+                        socketCliente.close();
 
-                        break;
                     } catch (IOException e) {
                         System.out.println(e.getMessage());
                         System.out.println("Conexion terminada");
                     }
-                }
             }
         });
+        
         hilo.start();
     }
 

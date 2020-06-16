@@ -74,8 +74,6 @@ public class LucesActivity extends AppCompatActivity {
                     OBJETIVO,
                     !lucesHb1
             ).execute().get();
-            System.out.println("asdasdasdasd");
-            System.out.println(lucesHb1);
             cambiarEstado(hb1, lucesHb1);
             imprimirEstado(lucesHb1, view);
         }

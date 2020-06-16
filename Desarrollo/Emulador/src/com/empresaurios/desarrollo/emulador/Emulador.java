@@ -32,7 +32,7 @@ public class Emulador {
                 Socket socket = null;
                 try {
                     socket = serverSocket.accept();
-                    Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Un nuevo cliente esta conectado: " + socket);
+                    Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Conexion establecida con: ", socket.getInetAddress().getHostName());
 
                     //Obtencion de las cadenas de entrada y salida
                     DataInputStream autinputServer = new DataInputStream((socket.getInputStream()));
@@ -65,12 +65,12 @@ public class Emulador {
                                 break;
                             case "AIRE":
                                 aire = orden;
-                                ObtenerEstadoAire(orden);
+                                ObtenerEstadoAire(aire);
                                 ordoutputServer.writeBoolean(aire);
                                 break;
                             case "CERRADURAS":
                                 cerraduras = orden;
-                                ObtenerEstadoCerraduras(orden);
+                                ObtenerEstadoCerraduras(cerraduras);
                                 ordoutputServer.writeBoolean(cerraduras);
                                 break;
                             default:
@@ -88,27 +88,27 @@ public class Emulador {
         }
     }
 
-    public void ObtenerEstadoLuces(boolean orden) {
-        if (orden) {
-            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "LAS VELAS MODERNAS SE HAN DESFUNDIDO");
+    public void ObtenerEstadoLuces(boolean luces) {
+        if (luces) {
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "LUCES ENCENDIDAS");
         } else {
-            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "LAS VELAS MODERNAS SE HAN FUNDIDO");
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "LUCES APAGADAS");
         }
     }
 
-    public void ObtenerEstadoAire(boolean orden) {
-        if (orden) {
-            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "EL ABANICO MODERNO SE HA DESROMPIDO");
+    public void ObtenerEstadoAire(boolean aire) {
+        if (aire) {
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "AIRE ACONDICIONADO ACTIVADO");
         } else {
-            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "EL ABANICO MODERNO SE HA ROMPIDO");
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "AIRE ACONDICIONADO DESACTIVADO");
         }
     }
 
-    public void ObtenerEstadoCerraduras(boolean orden) {
-        if (orden) {
-            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "LAS CHAPAS MODERNAS SE HAN DESATRANCADO");
+    public void ObtenerEstadoCerraduras(boolean cerraduras) {
+        if (cerraduras) {
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "CERRADURAS BLOQUEADAS");
         } else {
-            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "LAS CHAPAS MODERNAS SE HAN ATRANCADO");
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "CERRADURAS DESBLOQUEADAS");
         }
     }
 

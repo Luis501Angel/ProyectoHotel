@@ -37,8 +37,10 @@ public class Emulador {
                     //Obtencion de las cadenas de entrada y salida
                     DataInputStream autinputServer = new DataInputStream((socket.getInputStream()));
                     DataOutputStream autoutputServer = new DataOutputStream(socket.getOutputStream());
+
                     boolean auto = autinputServer.readBoolean();
                     objetivo = autinputServer.readUTF();
+
                     if (auto) {
                         switch (objetivo) {
                             case "Luces":
@@ -56,22 +58,24 @@ public class Emulador {
                     } else {
                         DataInputStream ordinputServer = new DataInputStream((socket.getInputStream()));
                         DataOutputStream ordoutputServer = new DataOutputStream(socket.getOutputStream());
+
                         boolean orden = ordinputServer.readBoolean();
+
                         switch (objetivo) {
                             case "LUCES":
                                 luces = orden;
-                                ObtenerEstadoLuces(luces);
                                 ordoutputServer.writeBoolean(luces);
+                                ObtenerEstadoLuces(luces);
                                 break;
                             case "AIRE":
                                 aire = orden;
-                                ObtenerEstadoAire(aire);
                                 ordoutputServer.writeBoolean(aire);
+                                ObtenerEstadoAire(aire);
                                 break;
                             case "CERRADURAS":
                                 cerraduras = orden;
-                                ObtenerEstadoCerraduras(cerraduras);
                                 ordoutputServer.writeBoolean(cerraduras);
+                                ObtenerEstadoCerraduras(cerraduras);
                                 break;
                             default:
                                 break;

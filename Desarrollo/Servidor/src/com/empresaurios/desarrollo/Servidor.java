@@ -5,7 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -13,17 +14,18 @@ import java.util.Scanner;
  */
 public class Servidor {
 
-    private Socket socket;
+    // Objetos del servidor
     private ServerSocket serverSocket;
-    Scanner teclado = new Scanner(System.in);
-    final String COMANDO_TERMINACION = "salir()";
-    boolean auto;
-    boolean estado;
-    boolean orden;
+
+    // Objetos del cliente
+    boolean auto = false;
+    boolean estado = false;
+    boolean orden = false;
     String objetivo = "";
     String habitacion = "";
-    DataOutputStream bufferDeSalida = null;
-    DataInputStream bufferDeEntrada = null;
+
+    DataInputStream entradaCliente = null;
+    DataOutputStream salidaCliente = null;
 
     public void levantarConexion() {
         try {
@@ -39,85 +41,54 @@ public class Servidor {
         }
     }
 
-    public void levantarConexionCliente(String ip) {
-        try {
-            Socket socketEmulador = new Socket(ip, 1444);
-            DataOutputStream salidaEmulador = new DataOutputStream(socketEmulador.getOutputStream());
-            DataInputStream entradaEmulador = new DataInputStream(socketEmulador.getInputStream());
-            System.out.println("Estado de las luces para el cliente: " + estado);
-            enviarEstado(salidaEmulador);
-            salidaEmulador.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-            mostrarTexto("Excepcion al levantar conexion: " + e.getMessage());
-            System.exit(0);
-        }
-    }
-
     public void levantarConexionEmulador(String ip) {
         try {
-            Socket socketCliente = new Socket(ip, 1441);
+            Socket socketEmulador = new Socket(ip, 1441);
 
-            DataOutputStream salidaCliente = new DataOutputStream(socketCliente.getOutputStream());
-            DataInputStream entradaEmulador = new DataInputStream(socketCliente.getInputStream());
+            DataInputStream entradaEmulador = new DataInputStream(socketEmulador.getInputStream());
+            DataOutputStream salidaEmulador = new DataOutputStream(socketEmulador.getOutputStream());
 
-            mostrarTexto("Conectado al emulador: " + socketCliente.getInetAddress().getHostName() + " por el puerto 1441");
-            enviar(salidaCliente);
+            mostrarTexto("Conectado al emulador: " + socketEmulador.getInetAddress().getHostName() + " por el puerto 1441");
+
+            salidaEmulador.writeBoolean(auto);
+            salidaEmulador.writeUTF(objetivo);
+            salidaEmulador.writeBoolean(orden);
+
             estado = entradaEmulador.readBoolean();
-            System.out.println("Estado recibido por el emulador: " + estado);
-            levantarConexionCliente("192.168.1.68"); //IP del cliente
-            salidaCliente.flush();
+
         } catch (Exception e) {
             mostrarTexto("Excepcion al levantar conexion: " + e.getMessage());
             System.exit(0);
         }
     }
 
-    public void recibirDatos(DataInputStream entradaCliente, DataOutputStream salidaCliente) throws IOException {
+    public void recibirDatosCliente(DataInputStream entradaCliente, DataOutputStream salidaCliente) throws IOException {
 
         try {
-            do {
-                auto = entradaCliente.readBoolean();
-                habitacion = (String) entradaCliente.readUTF();
-                switch (habitacion) {
-                    case "HB1":
-                }
-                objetivo = (String) entradaCliente.readUTF();
-                System.out.println("El objetivo es: " + objetivo);
-                if (auto) {
-                    orden = entradaCliente.readBoolean();
-                }
-                levantarConexionEmulador("192.168.1.76");  //IP del emulador
-                break;
-            } while (!objetivo.equals(COMANDO_TERMINACION));
+            auto = entradaCliente.readBoolean();
+            habitacion = (String) entradaCliente.readUTF();
+
+            switch (habitacion) {
+                case "HB1":
+                // SI es HB1 usa ip ...
+                // Sies hb2 usa ip2...
+            }
+            objetivo = (String) entradaCliente.readUTF();
+
+            System.out.println("El objetivo es: " + objetivo);
+
+            if (!auto) {
+                orden = entradaCliente.readBoolean();
+            }
+
+            levantarConexionEmulador("192.168.1.76");  //IP del emulador
         } catch (IOException e) {
-            socket.close();
             serverSocket.close();
         }
     }
 
-    public void enviar(DataOutputStream bufferDeSalida) {
-        try {
-            bufferDeSalida.writeBoolean(auto);
-            bufferDeSalida.writeUTF(objetivo);
-            bufferDeSalida.writeBoolean(orden);
-            bufferDeSalida.flush();
-        } catch (IOException e) {
-            mostrarTexto("Error al enviar: " + e.getMessage());
-        }
-    }
-
-    public void enviarEstado(DataOutputStream bufferDeSalida) {
-        try {
-            bufferDeSalida.writeBoolean(estado);
-            bufferDeSalida.flush();
-        } catch (IOException e) {
-            mostrarTexto("Error al enviar: " + e.getMessage());
-        }
-    }
-
-    public static void mostrarTexto(String st) {
-        System.out.println(st);
+    public static void mostrarTexto(String mensaje) {
+        Logger.getLogger(Servidor.class.getName()).log(Level.INFO, mensaje);
     }
 
     public void ejecutarConexion(Socket socketCliente) {
@@ -128,7 +99,10 @@ public class Servidor {
                     try {
                         DataInputStream entradaCliente = new DataInputStream(socketCliente.getInputStream());
                         DataOutputStream salidaCliente = new DataOutputStream(socketCliente.getOutputStream());
-                        recibirDatos(entradaCliente, salidaCliente);
+
+                        recibirDatosCliente(entradaCliente, salidaCliente);
+                        salidaCliente.writeBoolean(estado);
+
                         break;
                     } catch (IOException e) {
                         System.out.println(e.getMessage());

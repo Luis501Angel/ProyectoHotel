@@ -39,12 +39,11 @@ public class Servidor {
         }
     }
 
-    public void levantarConexionCliente(String ip, int puerto) {
+    public void levantarConexionCliente(String ip) {
         try {
-            Socket socketEmulador = new Socket("192.168.1.68", 1444);
+            Socket socketEmulador = new Socket(ip, 1444);
             DataOutputStream salidaEmulador = new DataOutputStream(socketEmulador.getOutputStream());
             DataInputStream entradaEmulador = new DataInputStream(socketEmulador.getInputStream());
-            estado = entradaEmulador.readBoolean();
             System.out.println("Estado de las luces para el cliente: " + estado);
             enviarEstado(salidaEmulador);
             salidaEmulador.flush();
@@ -66,7 +65,7 @@ public class Servidor {
             enviar(salidaCliente);
             estado = entradaEmulador.readBoolean();
             System.out.println("Estado recibido por el emulador: " + estado);
-            levantarConexionCliente("192.168.1.69", 1444); //IP del cliente
+            levantarConexionCliente("192.168.1.68"); //IP del cliente
             salidaCliente.flush();
         } catch (Exception e) {
             mostrarTexto("Excepcion al levantar conexion: " + e.getMessage());

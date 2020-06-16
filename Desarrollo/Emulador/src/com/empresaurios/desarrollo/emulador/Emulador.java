@@ -42,7 +42,7 @@ public class Emulador {
                     if (auto) {
                         switch (objetivo) {
                             case "Luces":
-                                autoutputServer.writeBoolean(luces);
+                                autoutputServer.writeBoolean(false);
                                 break;
                             case "Aire":
                                 autoutputServer.writeBoolean(aire);
@@ -61,7 +61,7 @@ public class Emulador {
                             case "LUCES":
                                 luces = orden;
                                 ObtenerEstadoLuces(luces);
-                                ordoutputServer.writeBoolean(luces);
+                                ordoutputServer.writeBoolean(false);
                                 break;
                             case "AIRE":
                                 aire = orden;

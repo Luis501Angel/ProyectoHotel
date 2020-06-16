@@ -12,10 +12,13 @@ import com.dnieln7.vaid.R;
 import com.dnieln7.vaid.utils.Directorio;
 import com.dnieln7.vaid.utils.Printer;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.ExecutionException;
@@ -120,26 +123,37 @@ public class LucesActivity extends AppCompatActivity {
             this.orden = orden;
         }
 
+        private DataInputStream aceptarConexion() throws IOException {
+            ServerSocket sk = new ServerSocket(1444);
+            Socket cliente = sk.accept();
+            DataInputStream entradaServidor = new DataInputStream(cliente.getInputStream());
+            return entradaServidor;
+        }
+
         @Override
         protected Boolean doInBackground(Void... voids) {
             boolean estado = false;
 
             try (Socket cliente = new Socket()) {
-                cliente.connect(new InetSocketAddress(ip, puerto), 50);
+                cliente.connect(new InetSocketAddress(ip, puerto), 5000);
 
-                if(cliente.isConnected()) {
-                    DataInputStream entrada = new DataInputStream(cliente.getInputStream());
-                    DataOutputStream salida = new DataOutputStream(cliente.getOutputStream());
+                while(true){
+                    if(cliente.isConnected()) {
+                        DataInputStream entrada = new DataInputStream(cliente.getInputStream());
+                        DataOutputStream salida = new DataOutputStream(cliente.getOutputStream());
 
-                    salida.writeBoolean(false);
-                    salida.writeUTF(habitacion);
-                    salida.writeUTF(objetivo);
-                    salida.writeBoolean(orden);
-                    estado = entrada.readBoolean();
-                    System.out.println("El estado es: " + estado);
-                }
-                else {
-                    throw new SocketTimeoutException();
+                        salida.writeBoolean(false);
+                        salida.writeUTF(habitacion);
+                        salida.writeUTF(objetivo);
+                        salida.writeBoolean(orden);
+                        //estado = entrada.readBoolean();
+
+                        estado = aceptarConexion().readBoolean();
+                        System.out.println("El estado es: " + estado);
+                    }
+                    else {
+                        throw new SocketTimeoutException();
+                    }
                 }
             }
             catch (IOException e) {

@@ -27,8 +27,8 @@ public class LucesActivity extends AppCompatActivity {
     private boolean lucesHb1;
     private boolean lucesHb2;
 
-    private static CardView hb1;
-    private static CardView hb2;
+    private CardView hb1;
+    private CardView hb2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,8 @@ public class LucesActivity extends AppCompatActivity {
     }
 
     private static void cambiarEstado(CardView habitacion, boolean orden) {
+
+        System.out.println(orden);
         if (orden) {
             habitacion.setCardBackgroundColor(Directorio.LUCES_ON);
         }
@@ -72,15 +74,16 @@ public class LucesActivity extends AppCompatActivity {
                     OBJETIVO,
                     !lucesHb1
             ).execute().get();
+            System.out.println("asdasdasdasd");
+            System.out.println(lucesHb1);
+            cambiarEstado(hb1, lucesHb1);
+            imprimirEstado(lucesHb1, view);
         }
         catch (ExecutionException | InterruptedException e) {
             Thread.currentThread().interrupt();
             Printer.snackBar(view, e.getMessage());
             Printer.logError(LucesActivity.class.getName(), e);
         }
-
-        cambiarEstado(hb1, lucesHb1);
-        imprimirEstado(lucesHb1, view);
     }
 
     public void interactuarHb2(View view) {
@@ -137,8 +140,7 @@ public class LucesActivity extends AppCompatActivity {
                         salida.writeUTF(objetivo);
                         salida.writeBoolean(orden);
                         estado = entrada.readBoolean();
-
-                        cambiarEstado(LucesActivity.hb1, estado);
+                        System.out.println("estado -> " + estado);
                     }
                     else {
                         throw new SocketTimeoutException();

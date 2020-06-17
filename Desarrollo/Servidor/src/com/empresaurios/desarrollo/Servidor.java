@@ -1,12 +1,15 @@
 package com.empresaurios.desarrollo;
 
+import java.awt.TextArea;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 
 /**
  *
@@ -23,102 +26,126 @@ public class Servidor {
     boolean orden = false;
     String objetivo = "";
     String habitacion = "";
+    String ipCliente = "";
 
     DataInputStream entradaCliente = null;
     DataOutputStream salidaCliente = null;
 
+    static JFrame igServer;
+    static TextArea logTextArea;
+
+    String COMANDO_TERMINACION = "salir()";
+
     public void levantarConexion() {
         try {
             serverSocket = new ServerSocket(1444);
-            System.out.println("El server se ha iniciado");
+            agregarTextArea("El servidor se ha iniciado");
+
             while (true) {
                 Socket socketCliente = serverSocket.accept();
-                System.out.println("Conexion establecida con el cliente: " + socketCliente.getInetAddress().getHostName());
-               
+                ipCliente = socketCliente.getInetAddress().getHostAddress();
+
+                agregarTextArea("Conexion establecida con el cliente: " + ipCliente);
+
                 ejecutarConexion(socketCliente);
             }
         } catch (IOException e) {
-            mostrarTexto("Error al levantar la conexion: " + e.getMessage());
-            System.exit(0);
+            agregarTextArea("Error al levantar la conexion: " + e.getMessage());
         }
     }
 
     public void levantarConexionEmulador(String ip) {
         try {
-            Socket socketEmulador = new Socket(ip, 1441);
+            while (true) {
+                Socket socketEmulador = new Socket(ip, 1441);
 
-            DataInputStream entradaEmulador = new DataInputStream(socketEmulador.getInputStream());
-            DataOutputStream salidaEmulador = new DataOutputStream(socketEmulador.getOutputStream());
+                DataInputStream entradaEmulador = new DataInputStream(socketEmulador.getInputStream());
+                DataOutputStream salidaEmulador = new DataOutputStream(socketEmulador.getOutputStream());
 
-            mostrarTexto("Conectado al emulador: " + socketEmulador.getInetAddress().getHostName() + " por el puerto 1441");
+                agregarTextArea("Conectado al emulador: " + socketEmulador.getInetAddress().getHostName() + " por el puerto 1441");
 
-            salidaEmulador.writeBoolean(auto);
-            salidaEmulador.writeUTF(objetivo);
-            salidaEmulador.writeBoolean(orden);
+                salidaEmulador.writeBoolean(auto);
+                salidaEmulador.writeUTF(objetivo);
+                salidaEmulador.writeBoolean(orden);
 
-            estado = entradaEmulador.readBoolean();
-
+                estado = entradaEmulador.readBoolean();
+                agregarTextArea("Estado recibido del emulador: " + estado);
+                salidaEmulador.flush();
+                break;
+            }
         } catch (Exception e) {
-            mostrarTexto("Excepcion al levantar conexion: " + e.getMessage());
-            System.exit(0);
+            agregarTextArea("Excepcion al levantar conexion: " + e.getMessage());
         }
     }
 
     public void recibirDatosCliente(DataInputStream entradaCliente, DataOutputStream salidaCliente) throws IOException {
 
         try {
-            auto = entradaCliente.readBoolean();
-            habitacion = (String) entradaCliente.readUTF();
+            while(true){
+                auto = entradaCliente.readBoolean();
+                habitacion = (String) entradaCliente.readUTF();
 
-            switch (habitacion) {
-                case "HB1":
-                // SI es HB1 usa ip ...
-                // Sies hb2 usa ip2...
-            }
-            objetivo = (String) entradaCliente.readUTF();
+                switch (habitacion) {
+                    case "HB1":
+                        
+                    // SI es HB1 usa ip ...
+                    // Sies hb2 usa ip2...
+                }
+                objetivo = (String) entradaCliente.readUTF();
 
-            System.out.println("El objetivo es: " + objetivo);
+                agregarTextArea("El objetivo es: " + objetivo + " en la habitacion: " + habitacion);
 
-            if (!auto) {
-                orden = entradaCliente.readBoolean();
-            }
-
-            levantarConexionEmulador("192.168.1.68");  //IP del emulador
+                if (!auto) {
+                    orden = entradaCliente.readBoolean();
+                }
+                levantarConexionEmulador("192.168.1.76");  //IP del emulador
+                break;
+            } 
         } catch (IOException e) {
             serverSocket.close();
         }
     }
 
-    public static void mostrarTexto(String mensaje) {
-        Logger.getLogger(Servidor.class.getName()).log(Level.INFO, mensaje);
+    public static void agregarTextArea(String mensaje) {
+        logTextArea.append(new Date() + "     " + mensaje + "\n");
     }
 
-    public void ejecutarConexion(Socket socketCliente) {
+    public void ejecutarConexion(Socket socketCliente) throws IOException {
         Thread hilo = new Thread(new Runnable() {
             @Override
             public void run() {
-                    try {
-                        DataInputStream entradaCliente = new DataInputStream(socketCliente.getInputStream());
-                        DataOutputStream salidaCliente = new DataOutputStream(socketCliente.getOutputStream());
+                try {
+                    DataInputStream entradaCliente = new DataInputStream(socketCliente.getInputStream());
+                    DataOutputStream salidaCliente = new DataOutputStream(socketCliente.getOutputStream());
 
-                        recibirDatosCliente(entradaCliente, salidaCliente);
-                        salidaCliente.writeBoolean(estado);
-                        
-                        socketCliente.close();
+                    recibirDatosCliente(entradaCliente, salidaCliente);
+                    salidaCliente.writeBoolean(estado);
+                    agregarTextArea("Estado enviado al cliente: " + estado);
+                    socketCliente.close();
+                } catch (IOException e) {
+                    agregarTextArea(e.getMessage());
+                    agregarTextArea("Conexion terminada");
 
-                    } catch (IOException e) {
-                        System.out.println(e.getMessage());
-                        System.out.println("Conexion terminada");
-                    }
+                }
             }
         });
-        
+
         hilo.start();
     }
 
     public static void main(String[] args) throws IOException {
-        Servidor servidor = new Servidor();
+        //Frame
+        igServer = new JFrame();
+        igServer.setTitle("Servidor");
+        igServer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        igServer.setVisible(true);
+        igServer.setBounds(100, 100, 600, 400);
 
+        logTextArea = new TextArea();
+        igServer.add(logTextArea);
+
+        //Servidor
+        Servidor servidor = new Servidor();
         servidor.levantarConexion();
     }
 }

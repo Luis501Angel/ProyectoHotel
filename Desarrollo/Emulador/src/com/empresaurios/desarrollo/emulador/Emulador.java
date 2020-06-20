@@ -43,14 +43,17 @@ public class Emulador {
 
                     if (auto) {
                         switch (objetivo) {
-                            case "Luces":
+                            case "LUCES":
                                 autoutputServer.writeBoolean(luces);
+                                ObtenerEstadoLuces(luces);
                                 break;
-                            case "Aire":
+                            case "AIRE":
                                 autoutputServer.writeBoolean(aire);
+                                ObtenerEstadoAire(aire);
                                 break;
-                            case "Cerraduras":
+                            case "CERRADURAS":
                                 autoutputServer.writeBoolean(cerraduras);
+                                ObtenerEstadoCerraduras(cerraduras);
                                 break;
                             default:
                                 break;

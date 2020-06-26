@@ -113,9 +113,9 @@ public class Emulador {
 
     public void ObtenerEstadoCerraduras(boolean cerraduras) {
         if (cerraduras) {
-            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "CERRADURAS BLOQUEADAS");
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "CERRADURAS ABIERTAS");
         } else {
-            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "CERRADURAS DESBLOQUEADAS");
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "CERRADURAS CERRADAS");
         }
     }
 

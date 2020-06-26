@@ -33,4 +33,8 @@ public class MainActivity extends AppCompatActivity {
     public void aire(View view) {
         Printer.toast(this, "Aire");
     }
+
+    public void about(View view) {
+        startActivity(new Intent(this, AboutActivity.class));
+    }
 }

@@ -15,7 +15,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:layout_margin="10dp"
         android:elevation="5dp"
         android:onClick="luces"
         app:cardCornerRadius="10dp">
@@ -42,7 +42,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:layout_margin="10dp"
         android:elevation="5dp"
         app:cardCornerRadius="10dp">
 
@@ -68,7 +68,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:layout_margin="10dp"
         android:elevation="5dp"
         app:cardCornerRadius="10dp">
 
@@ -90,4 +90,20 @@
                 android:textSize="20sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="end|bottom"
+        android:padding="10dp">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:onClick="about"
+            android:src="@drawable/about"
+            app:backgroundTint="@color/secondary"
+            app:elevation="5dp" />
+    </LinearLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>

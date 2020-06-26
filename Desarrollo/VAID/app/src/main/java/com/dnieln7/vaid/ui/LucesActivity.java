@@ -46,8 +46,6 @@ public class LucesActivity extends AppCompatActivity {
     }
 
     private static void cambiarEstado(CardView habitacion, boolean orden) {
-
-        System.out.println(orden);
         if (orden) {
             habitacion.setCardBackgroundColor(Directorio.LUCES_ON);
         }
@@ -74,14 +72,15 @@ public class LucesActivity extends AppCompatActivity {
                     OBJETIVO,
                     !lucesHb1
             ).execute().get();
-            cambiarEstado(hb1, lucesHb1);
-            imprimirEstado(lucesHb1, view);
         }
         catch (ExecutionException | InterruptedException e) {
             Thread.currentThread().interrupt();
             Printer.snackBar(view, e.getMessage());
             Printer.logError(LucesActivity.class.getName(), e);
         }
+
+        cambiarEstado(hb1, lucesHb1);
+        imprimirEstado(lucesHb1, view);
     }
 
     public void interactuarHb2(View view) {
@@ -128,21 +127,18 @@ public class LucesActivity extends AppCompatActivity {
             try (Socket cliente = new Socket()) {
                 cliente.connect(new InetSocketAddress(ip, puerto), 5000);
 
-                while(true){
-                    if(cliente.isConnected()) {
-                        DataInputStream entrada = new DataInputStream(cliente.getInputStream());
-                        DataOutputStream salida = new DataOutputStream(cliente.getOutputStream());
+                if(cliente.isConnected()) {
+                    DataInputStream entrada = new DataInputStream(cliente.getInputStream());
+                    DataOutputStream salida = new DataOutputStream(cliente.getOutputStream());
 
-                        salida.writeBoolean(false);
-                        salida.writeUTF(habitacion);
-                        salida.writeUTF(objetivo);
-                        salida.writeBoolean(orden);
-                        estado = entrada.readBoolean();
-                        System.out.println("estado -> " + estado);
-                    }
-                    else {
-                        throw new SocketTimeoutException();
-                    }
+                    salida.writeBoolean(false);
+                    salida.writeUTF(habitacion);
+                    salida.writeUTF(objetivo);
+                    salida.writeBoolean(orden);
+                    estado = entrada.readBoolean();
+                }
+                else {
+                    throw new SocketTimeoutException();
                 }
             }
             catch (IOException e) {

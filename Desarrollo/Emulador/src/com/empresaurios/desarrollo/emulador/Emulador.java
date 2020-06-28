@@ -17,6 +17,7 @@ public class Emulador {
     private boolean aire;
     private boolean cerraduras;
     private String objetivo;
+    private String ipDestino = "";
 
     public Emulador() {
         this.aire = false;
@@ -32,7 +33,8 @@ public class Emulador {
                 Socket socket = null;
                 try {
                     socket = serverSocket.accept();
-                    Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Conexion establecida con: ", socket.getInetAddress().getHostName());
+                    ipDestino = socket.getInetAddress().getHostAddress();
+                    Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Conexion establecida con: " + ipDestino);
 
                     //Obtencion de las cadenas de entrada y salida
                     DataInputStream autinputServer = new DataInputStream((socket.getInputStream()));

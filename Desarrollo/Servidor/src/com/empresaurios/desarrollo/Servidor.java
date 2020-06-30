@@ -81,26 +81,31 @@ public class Servidor {
     public void recibirDatosCliente(DataInputStream entradaCliente, DataOutputStream salidaCliente) throws IOException {
 
         try {
-            while(true){
+            while (true) {
                 auto = entradaCliente.readBoolean();
                 habitacion = (String) entradaCliente.readUTF();
 
                 switch (habitacion) {
                     case "HB1":
-                        
-                    // SI es HB1 usa ip ...
-                    // Sies hb2 usa ip2...
+                        levantarConexionEmulador("26.163.43.171");  //IP del emulador de la habitacion 1
+                        objetivo = (String) entradaCliente.readUTF();
+                        agregarTextArea("El objetivo es: " + objetivo + " en la habitacion: " + habitacion);
+                        if (!auto) {
+                            orden = entradaCliente.readBoolean();
+                        }
+                        break;
+                    case "HB2":
+                        levantarConexionEmulador("26.163.43.171");  //IP del emulador de la habitacion 1
+                        objetivo = (String) entradaCliente.readUTF();
+                        agregarTextArea("El objetivo es: " + objetivo + " en la habitacion: " + habitacion);
+                        if (!auto) {
+                            orden = entradaCliente.readBoolean();
+                        }
+                        break;
                 }
-                objetivo = (String) entradaCliente.readUTF();
 
-                agregarTextArea("El objetivo es: " + objetivo + " en la habitacion: " + habitacion);
-
-                if (!auto) {
-                    orden = entradaCliente.readBoolean();
-                }
-                levantarConexionEmulador("192.168.1.76");  //IP del emulador
                 break;
-            } 
+            }
         } catch (IOException e) {
             serverSocket.close();
         }

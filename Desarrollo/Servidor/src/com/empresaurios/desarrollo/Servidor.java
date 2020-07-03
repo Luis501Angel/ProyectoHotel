@@ -26,10 +26,7 @@ public class Servidor {
     String habitacion = "";
     String ipCliente = "";
 
-    DataInputStream entradaCliente = null;
-    DataOutputStream salidaCliente = null;
-
-    static JFrame igServer;
+    static JFrame serverFrame;
     static TextArea logTextArea;
 
     String COMANDO_TERMINACION = "salir()";
@@ -52,7 +49,7 @@ public class Servidor {
         }
     }
 
-    public void levantarConexionEmulador(String ip) {
+    public void conexionEmulador(String ip) {
         try {
             while (true) {
                 Socket socketEmulador = new Socket(ip, 1441);
@@ -84,7 +81,7 @@ public class Servidor {
                 habitacion = (String) entradaCliente.readUTF();
                 switch (habitacion) {
                     case "HB1":
-                        levantarConexionEmulador("26.163.43.171");  //IP del emulador de la habitacion 1
+                        conexionEmulador("26.163.43.171");  //IP del emulador de la habitacion 1
                         objetivo = (String) entradaCliente.readUTF();
                         agregarTextArea("El objetivo es: " + objetivo + " en la habitacion: " + habitacion);
                         if (!auto) {
@@ -92,7 +89,7 @@ public class Servidor {
                         }
                         break;
                     case "HB2":
-                        levantarConexionEmulador("26.163.43.171");  //IP del emulador de la habitacion 1
+                        conexionEmulador("26.163.43.171");  //IP del emulador de la habitacion 2
                         objetivo = (String) entradaCliente.readUTF();
                         agregarTextArea("El objetivo es: " + objetivo + " en la habitacion: " + habitacion);
                         if (!auto) {
@@ -136,14 +133,14 @@ public class Servidor {
 
     public static void main(String[] args) throws IOException {
         //Frame
-        igServer = new JFrame();
-        igServer.setTitle("Servidor");
-        igServer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        igServer.setVisible(true);
-        igServer.setBounds(100, 100, 600, 400);
+        serverFrame = new JFrame();
+        serverFrame.setTitle("Servidor");
+        serverFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        serverFrame.setVisible(true);
+        serverFrame.setBounds(100, 100, 600, 400);
 
         logTextArea = new TextArea();
-        igServer.add(logTextArea);
+        serverFrame.add(logTextArea);
 
         //Servidor
         Servidor servidor = new Servidor();

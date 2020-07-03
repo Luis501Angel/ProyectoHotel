@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -84,7 +82,6 @@ public class Servidor {
             while (true) {
                 auto = entradaCliente.readBoolean();
                 habitacion = (String) entradaCliente.readUTF();
-
                 switch (habitacion) {
                     case "HB1":
                         levantarConexionEmulador("26.163.43.171");  //IP del emulador de la habitacion 1
@@ -103,7 +100,6 @@ public class Servidor {
                         }
                         break;
                 }
-
                 break;
             }
         } catch (IOException e) {

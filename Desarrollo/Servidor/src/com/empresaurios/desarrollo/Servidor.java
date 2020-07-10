@@ -81,7 +81,7 @@ public class Servidor {
                 habitacion = (String) entradaCliente.readUTF();
                 switch (habitacion) {
                     case "HB1":
-                        conexionEmulador("26.163.43.171");  //IP del emulador de la habitacion 1
+                        conexionEmulador("26.163.43.171"); //IP del emulador de la habitacion 1
                         objetivo = (String) entradaCliente.readUTF();
                         agregarTextArea("El objetivo es: " + objetivo + " en la habitacion: " + habitacion);
                         if (!auto) {
@@ -89,7 +89,7 @@ public class Servidor {
                         }
                         break;
                     case "HB2":
-                        conexionEmulador("26.163.43.171");  //IP del emulador de la habitacion 2
+                        conexionEmulador("26.163.43.171"); //IP del emulador de la habitacion 2
                         objetivo = (String) entradaCliente.readUTF();
                         agregarTextArea("El objetivo es: " + objetivo + " en la habitacion: " + habitacion);
                         if (!auto) {

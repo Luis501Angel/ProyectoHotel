@@ -1,4 +1,4 @@
-package com.empresaurios.desarrollo;
+package com.empresaurios.desarrollo.servidor;
 
 import java.awt.TextArea;
 import java.io.DataInputStream;

@@ -3,13 +3,14 @@ package com.empresaurios.desarrollo.emulador;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
- * @author vitom
+ * @author kronoz
  */
 public class Emulador {
 
@@ -17,7 +18,7 @@ public class Emulador {
     private boolean aire;
     private boolean cerraduras;
     private String objetivo;
-    private String ipDestino = "";
+    private String ipServidor = "";
 
     public Emulador() {
         this.aire = false;
@@ -27,22 +28,22 @@ public class Emulador {
 
     public void iniciar() {
         try {
-            ServerSocket serverSocket = new ServerSocket(1441);
             Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Emulador iniciado...");
+            ServerSocket serverSocket = new ServerSocket(1441);
             while (true) {
                 Socket socket = null;
                 try {
+                    //Conexion con el servidor
                     socket = serverSocket.accept();
-                    ipDestino = socket.getInetAddress().getHostAddress();
-                    Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Conexion establecida con: " + ipDestino);
-
-                    //Obtencion de las cadenas de entrada y salida
+                    ipServidor = socket.getInetAddress().getHostName();
+                    Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Conexion establecida con: ", ipServidor);
+                    
+                    //Obtencion de las cadenas de entrada y salida del servidor
                     DataInputStream autinputServer = new DataInputStream((socket.getInputStream()));
                     DataOutputStream autoutputServer = new DataOutputStream(socket.getOutputStream());
-
                     boolean auto = autinputServer.readBoolean();
                     objetivo = autinputServer.readUTF();
-
+                    //Detección de modo auto/objetivo
                     if (auto) {
                         switch (objetivo) {
                             case "LUCES":
@@ -63,9 +64,7 @@ public class Emulador {
                     } else {
                         DataInputStream ordinputServer = new DataInputStream((socket.getInputStream()));
                         DataOutputStream ordoutputServer = new DataOutputStream(socket.getOutputStream());
-
                         boolean orden = ordinputServer.readBoolean();
-
                         switch (objetivo) {
                             case "LUCES":
                                 luces = orden;
@@ -86,10 +85,8 @@ public class Emulador {
                                 break;
                         }
                     }
-
-                } catch (Exception e) {
+                } catch (IOException e) {
                     socket.close();
-                    e.printStackTrace();
                 }
             }
         } catch (IOException ex) {
@@ -125,5 +122,4 @@ public class Emulador {
         Emulador emulador = new Emulador();
         emulador.iniciar();
     }
-
 }

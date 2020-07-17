@@ -28,8 +28,8 @@ public class Servidor {
     private String ipCliente = "";
 
     // Directorio
-    private static final String HB1_IP = "192.168.1.68";
-    private static final String HB2_IP = "192.168.1.68";
+    private static final String HB1_IP = "26.93.67.230";
+    private static final String HB2_IP = "26.93.67.230";
     private static final int HB1_PUERTO = 1440;
     private static final int HB2_PUERTO = 1441;
 
@@ -76,31 +76,29 @@ public class Servidor {
 
             salidaEmulador.flush();
         } catch (IOException e) {
+            System.out.println(e + ip + puerto);
             agregarTextArea("Excepcion al levantar conexion: " + e.getMessage());
         }
     }
 
     public void recibirDatosCliente(DataInputStream entradaCliente, DataOutputStream salidaCliente) throws IOException {
         try {
-            while (true) {
-                auto = entradaCliente.readBoolean();
-                habitacionCliente = entradaCliente.readUTF();
-                objetivoCliente = entradaCliente.readUTF();
+            auto = entradaCliente.readBoolean();
+            habitacionCliente = entradaCliente.readUTF();
+            objetivoCliente = entradaCliente.readUTF();
 
-                if (auto) {
+            if (auto) {
 
-                } else {
-                    agregarTextArea("El objetivo es: " + objetivoCliente + " en la habitacion: " + habitacionCliente);
+            } else {
+                agregarTextArea("El objetivo es: " + objetivoCliente + " en la habitacion: " + habitacionCliente);
 
-                    orden = entradaCliente.readBoolean();
+                orden = entradaCliente.readBoolean();
 
-                    if (habitacionCliente.equals("HB1")) {
-                        interactuarEmulador(HB1_IP, HB1_PUERTO);
-                    } else if (habitacionCliente.equals("HB2")) {
-                        interactuarEmulador(HB2_IP, HB2_PUERTO);
-                    }
+                if (habitacionCliente.equals("HB1")) {
+                    interactuarEmulador(HB1_IP, HB1_PUERTO);
+                } else if (habitacionCliente.equals("HB2")) {
+                    interactuarEmulador(HB2_IP, HB2_PUERTO);
                 }
-                break;
             }
         } catch (IOException e) {
             serverSocket.close();

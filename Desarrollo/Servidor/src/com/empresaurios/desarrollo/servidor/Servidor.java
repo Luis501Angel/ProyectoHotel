@@ -19,17 +19,24 @@ public class Servidor {
     private ServerSocket serverSocket;
 
     // Objetos del cliente
-    boolean auto = false;
-    boolean estado = false;
-    boolean orden = false;
-    String objetivo = "";
-    String habitacion = "";
-    String ipCliente = "";
+    private boolean auto = false;
+    private boolean estado = false;
+    private boolean orden = false;
 
-    static JFrame serverFrame;
-    static TextArea logTextArea;
+    private String objetivoCliente = "";
+    private String habitacionCliente = "";
+    private String ipCliente = "";
 
-    String COMANDO_TERMINACION = "salir()";
+    // Directorio
+    private static final String HB1_IP = "192.168.1.68";
+    private static final String HB2_IP = "192.168.1.68";
+    private static final int HB1_PUERTO = 1440;
+    private static final int HB2_PUERTO = 1441;
+
+    // GUI
+    private static JFrame serverFrame;
+    private static TextArea logTextArea;
+    private static final String COMANDO_TERMINACION = "salir()";
 
     public void levantarConexion() {
         try {
@@ -40,62 +47,58 @@ public class Servidor {
                 Socket socketCliente = serverSocket.accept();
                 ipCliente = socketCliente.getInetAddress().getHostAddress();
 
-                agregarTextArea("Conexion establecida con el cliente: " + ipCliente);
+                agregarTextArea("Iniciando Servidor...");
+                agregarTextArea("...Servidor Iniciado...");
 
-                ejecutarConexion(socketCliente);
+                agregarTextArea("Conexion establecida con el cliente: " + ipCliente);
+                recibirCliente(socketCliente);
             }
-        } catch (IOException e) {
-            agregarTextArea("Error al levantar la conexion: " + e.getMessage());
+        } catch (IOException error) {
+            agregarTextArea("Error al levantar la conexion");
+            agregarTextArea(error.getMessage());
         }
     }
 
-    public void conexionEmulador(String ip) {
-        try {
-            while (true) {
-                Socket socketEmulador = new Socket(ip, 1441);
+    public void interactuarEmulador(String ip, int puerto) {
+        try (Socket socketEmulador = new Socket(ip, puerto)) {
+            DataInputStream entradaEmulador = new DataInputStream(socketEmulador.getInputStream());
+            DataOutputStream salidaEmulador = new DataOutputStream(socketEmulador.getOutputStream());
 
-                DataInputStream entradaEmulador = new DataInputStream(socketEmulador.getInputStream());
-                DataOutputStream salidaEmulador = new DataOutputStream(socketEmulador.getOutputStream());
+            agregarTextArea("Conectado al emulador: " + socketEmulador.getInetAddress().getHostName() + " por el puerto 1441");
 
-                agregarTextArea("Conectado al emulador: " + socketEmulador.getInetAddress().getHostName() + " por el puerto 1441");
+            salidaEmulador.writeBoolean(false);
+            salidaEmulador.writeUTF(objetivoCliente);
+            salidaEmulador.writeBoolean(orden);
 
-                salidaEmulador.writeBoolean(auto);
-                salidaEmulador.writeUTF(objetivo);
-                salidaEmulador.writeBoolean(orden);
+            estado = entradaEmulador.readBoolean();
 
-                estado = entradaEmulador.readBoolean();
-                agregarTextArea("Estado recibido del emulador: " + estado);
-                salidaEmulador.flush();
-                break;
-            }
-        } catch (Exception e) {
+            agregarTextArea("Estado recibido del emulador: " + estado);
+
+            salidaEmulador.flush();
+        } catch (IOException e) {
             agregarTextArea("Excepcion al levantar conexion: " + e.getMessage());
         }
     }
 
     public void recibirDatosCliente(DataInputStream entradaCliente, DataOutputStream salidaCliente) throws IOException {
-
         try {
             while (true) {
                 auto = entradaCliente.readBoolean();
-                habitacion = (String) entradaCliente.readUTF();
-                switch (habitacion) {
-                    case "HB1":
-                        conexionEmulador("26.41.153.6"); //IP del emulador de la habitacion 1
-                        objetivo = (String) entradaCliente.readUTF();
-                        agregarTextArea("El objetivo es: " + objetivo + " en la habitacion: " + habitacion);
-                        if (!auto) {
-                            orden = entradaCliente.readBoolean();
-                        }
-                        break;
-                    case "HB2":
-                        conexionEmulador("26.45.17.136"); //IP del emulador de la habitacion 2
-                        objetivo = (String) entradaCliente.readUTF();
-                        agregarTextArea("El objetivo es: " + objetivo + " en la habitacion: " + habitacion);
-                        if (!auto) {
-                            orden = entradaCliente.readBoolean();
-                        }
-                        break;
+                habitacionCliente = entradaCliente.readUTF();
+                objetivoCliente = entradaCliente.readUTF();
+
+                if (auto) {
+
+                } else {
+                    agregarTextArea("El objetivo es: " + objetivoCliente + " en la habitacion: " + habitacionCliente);
+
+                    orden = entradaCliente.readBoolean();
+
+                    if (habitacionCliente.equals("HB1")) {
+                        interactuarEmulador(HB1_IP, HB1_PUERTO);
+                    } else if (habitacionCliente.equals("HB2")) {
+                        interactuarEmulador(HB2_IP, HB2_PUERTO);
+                    }
                 }
                 break;
             }
@@ -108,7 +111,7 @@ public class Servidor {
         logTextArea.append(new Date() + "     " + mensaje + "\n");
     }
 
-    public void ejecutarConexion(Socket socketCliente) throws IOException {
+    public void recibirCliente(Socket socketCliente) throws IOException {
         Thread hilo = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -118,12 +121,14 @@ public class Servidor {
 
                     recibirDatosCliente(entradaCliente, salidaCliente);
                     salidaCliente.writeBoolean(estado);
-                    agregarTextArea("Estado enviado al cliente: " + estado);
-                    socketCliente.close();
-                } catch (IOException e) {
-                    agregarTextArea(e.getMessage());
-                    agregarTextArea("Conexion terminada");
 
+                    agregarTextArea("Estado enviado al cliente: " + estado);
+
+                    socketCliente.close();
+                } catch (IOException error) {
+                    agregarTextArea("ha ocurrido un error");
+                    agregarTextArea(error.getMessage());
+                    agregarTextArea("Conexion terminada");
                 }
             }
         });

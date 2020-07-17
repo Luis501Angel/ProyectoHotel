@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,8 +18,6 @@ public class Emulador {
     private boolean luces;
     private boolean aire;
     private boolean cerraduras;
-    private String objetivo;
-    private String ipServidor = "";
 
     public Emulador() {
         this.aire = false;
@@ -27,22 +26,36 @@ public class Emulador {
     }
 
     public void iniciar() {
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Ingresar puerto: ");
+        int puerto = scanner.nextInt();
+
         try {
-            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Emulador iniciado...");
-            ServerSocket serverSocket = new ServerSocket(1441);
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Iniciando Emulador...");
+
+            ServerSocket serverSocket = new ServerSocket(puerto);
+
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "...Emulador Iniciado...");
+            Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Puerto: {0}", puerto);
+
             while (true) {
-                Socket socket = null;
+                Socket clienteSocket = null;
+
                 try {
                     //Conexion con el servidor
-                    socket = serverSocket.accept();
-                    ipServidor = socket.getInetAddress().getHostName();
+                    clienteSocket = serverSocket.accept();
+
+                    String ipServidor = clienteSocket.getInetAddress().getHostAddress();
                     Logger.getLogger(Emulador.class.getName()).log(Level.INFO, "Conexion establecida con: ", ipServidor);
-                    
+
                     //Obtencion de las cadenas de entrada y salida del servidor
-                    DataInputStream autinputServer = new DataInputStream((socket.getInputStream()));
-                    DataOutputStream autoutputServer = new DataOutputStream(socket.getOutputStream());
+                    DataInputStream autinputServer = new DataInputStream((clienteSocket.getInputStream()));
+                    DataOutputStream autoutputServer = new DataOutputStream(clienteSocket.getOutputStream());
+
                     boolean auto = autinputServer.readBoolean();
-                    objetivo = autinputServer.readUTF();
+                    String objetivo = autinputServer.readUTF();
+
                     //Detección de modo auto/objetivo
                     if (auto) {
                         switch (objetivo) {
@@ -62,9 +75,11 @@ public class Emulador {
                                 break;
                         }
                     } else {
-                        DataInputStream ordinputServer = new DataInputStream((socket.getInputStream()));
-                        DataOutputStream ordoutputServer = new DataOutputStream(socket.getOutputStream());
+                        DataInputStream ordinputServer = new DataInputStream((clienteSocket.getInputStream()));
+                        DataOutputStream ordoutputServer = new DataOutputStream(clienteSocket.getOutputStream());
+
                         boolean orden = ordinputServer.readBoolean();
+
                         switch (objetivo) {
                             case "LUCES":
                                 luces = orden;
@@ -86,11 +101,12 @@ public class Emulador {
                         }
                     }
                 } catch (IOException e) {
-                    socket.close();
+                    Logger.getLogger(Emulador.class.getName()).log(Level.SEVERE, null, e);
+                    clienteSocket.close();
                 }
             }
-        } catch (IOException ex) {
-            Logger.getLogger(Emulador.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException e) {
+            Logger.getLogger(Emulador.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 

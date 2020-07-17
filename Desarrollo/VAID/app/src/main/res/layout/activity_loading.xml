@@ -6,7 +6,7 @@
     android:background="@color/primary"
     android:orientation="vertical"
     android:padding="15dp"
-    tools:context=".ui.LoadingActivity">
+    tools:context=".ui.home.LoadingActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

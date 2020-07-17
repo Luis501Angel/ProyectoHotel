@@ -6,24 +6,25 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     android:orientation="vertical"
-    tools:context=".ui.luces.LucesActivity">
+    tools:context=".ui.cerraduras.CerradurasActivity">
 
     <include
-        android:id="@+id/luces_appbar"
+        android:id="@+id/cerraduras_appbar"
         layout="@layout/app_bar" />
 
     <GridLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:columnCount="2">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/luces_1"
+            android:id="@+id/cerraduras_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:onClick="interactuarHb1"
+            app:cardBackgroundColor="@android:color/white"
             app:cardCornerRadius="10dp">
 
             <LinearLayout
@@ -46,20 +47,21 @@
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_margin="10dp"
-                    android:src="@drawable/ic_foco" />
+                    android:src="@drawable/ic_door_open" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/luces_2"
+            android:id="@+id/cerraduras_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:onClick="interactuarHb2"
+            app:cardBackgroundColor="@android:color/white"
             app:cardCornerRadius="10dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -78,9 +80,8 @@
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_margin="10dp"
-                    android:src="@drawable/ic_foco" />
+                    android:src="@drawable/ic_door_open" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </GridLayout>
-
 </androidx.appcompat.widget.LinearLayoutCompat>

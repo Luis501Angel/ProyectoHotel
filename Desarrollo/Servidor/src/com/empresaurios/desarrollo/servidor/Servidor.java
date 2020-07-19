@@ -28,8 +28,8 @@ public class Servidor {
     private String ipCliente = "";
 
     // Directorio
-    private static final String HB1_IP = "26.93.67.230";
-    private static final String HB2_IP = "26.93.67.230";
+    private static final String HB1_IP = "26.45.17.136";
+    private static final String HB2_IP = "26.45.17.136";
     private static final int HB1_PUERTO = 1440;
     private static final int HB2_PUERTO = 1441;
 
